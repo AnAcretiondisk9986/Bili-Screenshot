@@ -4,6 +4,12 @@
 
 const $ = (id) => document.getElementById(id);
 
+// Mac 上 ⌘+Shift+Z 是浏览器重做快捷键，复制默认用 ⌘+Shift+C（与 manifest 命令一致）
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+const DEFAULT_COPY_SHORTCUT = IS_MAC
+  ? { ctrl: false, shift: true, alt: false, meta: true, code: "KeyC" }
+  : { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" };
+
 const DEFAULTS = {
   savePath: "BiliScreenshots/{date}/",
   burstPath: "BiliScreenshots/burst/",
@@ -18,7 +24,7 @@ const DEFAULTS = {
   pageShortcutEnabled: true,
   shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
   shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
-  shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
+  shortcutCopy: DEFAULT_COPY_SHORTCUT,
   copyAlsoSave: false,
 };
 
@@ -78,7 +84,6 @@ function shortcutEqual(a, b) {
 }
 
 // 系统级快捷键（manifest commands，Mac 为 Command 组合，其余平台为 Ctrl 组合）
-const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
 const DEFAULT_MOD = IS_MAC ? { ctrl: false, shift: true, alt: false, meta: true } : { ctrl: true, shift: true, alt: false, meta: false };
 
 const SYSTEM_SHORTCUTS = [
@@ -259,7 +264,7 @@ document.querySelectorAll("[data-clear]").forEach((btn) => {
 $("resetShortcutsBtn").addEventListener("click", () => {
   window._scCapture = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" };
   window._scBurst = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" };
-  window._scCopy = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" };
+  window._scCopy = { ctrl: !IS_MAC, shift: true, alt: false, meta: IS_MAC, code: IS_MAC ? "KeyC" : "KeyZ" };
   renderShortcuts();
   setStatus("已恢复默认快捷键，记得点击「保存设置」");
 });

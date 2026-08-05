@@ -9,7 +9,8 @@
     "notifications",
     "tabs",
     "scripting",
-    "alarms"
+    "alarms",
+    "clipboardWrite"
   ],
   "host_permissions": [
     "https://*.bilibili.com/*"

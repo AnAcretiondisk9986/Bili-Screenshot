@@ -6,6 +6,12 @@
 
 // ---------- 默认设置 ----------
 
+// Mac 上 ⌘+Shift+Z 是浏览器重做快捷键，复制用 ⌘+Shift+C（与 manifest 命令一致）
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+const DEFAULT_COPY_SHORTCUT = IS_MAC
+  ? { ctrl: false, shift: true, alt: false, meta: true, code: "KeyC" }
+  : { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" };
+
 const DEFAULTS = {
   savePath: "BiliScreenshots/{date}/", // 下载目录内相对路径，支持 {date}
   burstPath: "BiliScreenshots/burst/", // 连拍单独保存路径（第三层），支持 {date}
@@ -20,7 +26,7 @@ const DEFAULTS = {
   pageShortcutEnabled: true,           // 页面内快捷键总开关
   shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
   shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
-  shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
+  shortcutCopy: DEFAULT_COPY_SHORTCUT,
   copyAlsoSave: false,                 // 复制到剪贴板时同时保存文件
 };
 

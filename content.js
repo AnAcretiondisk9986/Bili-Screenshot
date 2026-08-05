@@ -200,7 +200,8 @@
       duration: formatTime(video.duration),
     };
 
-    const composed = composeFrame(video, includeDanmaku);    if (composed.ok) {
+    const composed = composeFrame(video, includeDanmaku);
+    if (composed.ok) {
       try {
         const dataUrl = canvasToDataUrl(composed.canvas, format, quality);
         const thumb = makeThumb(composed.canvas);
@@ -287,11 +288,17 @@
 
   // ---------- 页面内快捷键（可在扩展设置页直接修改） ----------
 
+  // Mac 上 ⌘+Shift+Z 是浏览器重做快捷键，复制默认用 ⌘+Shift+C（与 manifest 命令一致）
+  const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+  const DEFAULT_COPY_SHORTCUT = IS_MAC
+    ? { ctrl: false, shift: true, alt: false, meta: true, code: "KeyC" }
+    : { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" };
+
   let shortcutSettings = {
     pageShortcutEnabled: true,
     shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
     shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
-    shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
+    shortcutCopy: DEFAULT_COPY_SHORTCUT,
   };
 
   function matchesShortcut(e, s) {
@@ -311,7 +318,7 @@
         pageShortcutEnabled: true,
         shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
         shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
-        shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
+        shortcutCopy: DEFAULT_COPY_SHORTCUT,
       });
       shortcutSettings = data;
     } catch (e) {
