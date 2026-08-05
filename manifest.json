@@ -42,8 +42,8 @@
   "commands": {
     "bili-screenshot": {
       "suggested_key": {
-        "default": "Alt+Shift+S",
-        "mac": "Command+Shift+S"
+        "default": "Ctrl+Shift+Q",
+        "mac": "Ctrl+Shift+Q"
       },
       "description": "截图当前播放器画面"
     },

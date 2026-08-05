@@ -296,7 +296,7 @@
 
   let shortcutSettings = {
     pageShortcutEnabled: true,
-    shortcutCapture: { ctrl: false, alt: true, shift: true, meta: false, code: "KeyS" },
+    shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyQ" },
     shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
     shortcutCopy: DEFAULT_COPY_SHORTCUT,
   };
@@ -316,7 +316,7 @@
     try {
       const data = await chrome.storage.sync.get({
         pageShortcutEnabled: true,
-        shortcutCapture: { ctrl: false, alt: true, shift: true, meta: false, code: "KeyS" },
+        shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyQ" },
         shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
         shortcutCopy: DEFAULT_COPY_SHORTCUT,
       });
