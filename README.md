@@ -7,7 +7,7 @@
 本扩展兼容所有 Chromium 内核浏览器（Chrome、Edge、360 等），以下方法通用，无需商店上架：
 
 1. **获取源码**：
-   - 在 [GitHub 仓库](https://github.com/AnAcretiondisk9986/Bili-Screenshot) 页面点击绿色 **Code** 按钮 → **Download ZIP**（或直接到 [Releases](https://github.com/AnAcretiondisk9986/Bili-Screenshot/releases) 下载 `bili-screenshot-1.1.0.zip`）
+   - 在 [GitHub 仓库](https://github.com/AnAcretiondisk9986/Bili-Screenshot) 页面点击绿色 **Code** 按钮 → **Download ZIP**（或直接到 [Releases](https://github.com/AnAcretiondisk9986/Bili-Screenshot/releases) 下载 `bili-screenshot-1.1.3.zip`）
    - 解压到任意位置，确认 `manifest.json` 在解压目录的**根目录**（不要在压缩包内再嵌套一层文件夹）
 2. **打开扩展管理页**：
    - Chrome：地址栏输入 `chrome://extensions/` 回车
