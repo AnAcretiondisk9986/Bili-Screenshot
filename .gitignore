@@ -1,3 +1,4 @@
 .reasonix/
 node_modules/
 *.log
+tools/installer/_embedded/

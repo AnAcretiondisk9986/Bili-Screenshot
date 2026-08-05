@@ -46,14 +46,14 @@
 
 ## 一键安装器（无需开发者模式）
 
-如果目标用户不想手动开启开发者模式，可用 `release/` 下的安装器：
+如果目标用户不想手动开启开发者模式，可直接下载 **`BiliScreenshotInstaller.exe`**（单文件，扩展已内嵌其中）：
 
-1. 解压 `bili-screenshot-installer-1.0.0.zip`
-2. 双击 `BiliScreenshotInstaller.exe` → 自动完成：复制扩展到 `%LOCALAPPDATA%\BiliScreenshot\extension\`，并在桌面和开始菜单创建「B站截图浏览器」快捷方式
+1. 下载 `BiliScreenshotInstaller.exe`（GitHub Releases 页面）
+2. 双击运行 → 自动完成：释放扩展到 `%LOCALAPPDATA%\BiliScreenshot\extension\`，并在桌面和开始菜单创建「B站截图浏览器」快捷方式
 3. 完全退出 Chrome 后，双击该快捷方式启动浏览器，扩展即生效
 
 - 卸载：再次运行安装器（或在命令行执行 `BiliScreenshotInstaller.exe uninstall`）
-- 重新构建：运行 `tools/build_installer.cmd`（使用系统自带 .NET Framework 编译器，无第三方依赖）
+- 重新构建：运行 `tools/build_installer.cmd`（自动内嵌扩展文件，使用系统自带 .NET Framework 编译器，无第三方依赖）
 - 工作原理：Chrome 官方支持的 `--load-extension` 启动参数，不修改 Chrome 任何配置
 
 > 注意：扩展仅在该快捷方式启动的 Chrome 中生效；更新扩展版本时重新运行安装器覆盖即可。

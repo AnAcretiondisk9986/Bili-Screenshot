@@ -50,10 +50,20 @@ namespace BiliScreenshot
 
         private static int DoInstall()
         {
-            string src = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "extension");
-            if (!File.Exists(Path.Combine(src, "manifest.json")))
+            // 扩展文件已内嵌在 exe 中（EmbeddedFiles，单文件分发），直接释放到目标目录
+            try
             {
-                MessageBox.Show("未找到 extension 目录（应位于安装器同目录下）。",
+                EmbeddedFiles.WriteAll(ExtensionDir);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("释放扩展文件失败：" + ex.Message,
+                    "Bili Screenshot", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 1;
+            }
+            if (!File.Exists(Path.Combine(ExtensionDir, "manifest.json")))
+            {
+                MessageBox.Show("扩展文件不完整，请重新下载安装器。",
                     "Bili Screenshot", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 1;
             }
@@ -74,8 +84,6 @@ namespace BiliScreenshot
                 if (r != DialogResult.Yes) return 0;
             }
 
-            CopyDirectory(src, ExtensionDir);
-
             string loadArgs = "--load-extension=\"" + ExtensionDir + "\"";
             int created = 0;
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -94,7 +102,8 @@ namespace BiliScreenshot
 
             MessageBox.Show(
                 "安装成功！\n\n" +
-                "已在桌面和开始菜单创建「" + SHORTCUT_NAME + "」快捷方式。\n\n" +
+                "已安装 Bili Screenshot v" + EmbeddedFiles.VERSION + "，" +
+                "并在桌面和开始菜单创建「" + SHORTCUT_NAME + "」快捷方式。\n\n" +
                 "使用方法：\n" +
                 "1. 完全退出 Chrome\n" +
                 "2. 双击「" + SHORTCUT_NAME + "」启动浏览器\n" +
@@ -152,19 +161,6 @@ namespace BiliScreenshot
         private static bool IsRunning(string name)
         {
             return Process.GetProcessesByName(name).Length > 0;
-        }
-
-        private static void CopyDirectory(string src, string dst)
-        {
-            Directory.CreateDirectory(dst);
-            foreach (string file in Directory.GetFiles(src))
-            {
-                File.Copy(file, Path.Combine(dst, Path.GetFileName(file)), true);
-            }
-            foreach (string dir in Directory.GetDirectories(src))
-            {
-                CopyDirectory(dir, Path.Combine(dst, Path.GetFileName(dir)));
-            }
         }
 
         private static bool CreateShortcut(string linkPath, string target, string arguments)
