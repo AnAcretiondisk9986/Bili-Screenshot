@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bili Screenshot 设置</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="wrap">
+    <h1>⚙️ Bili Screenshot 设置</h1>
+
+    <section class="card">
+      <h2>保存</h2>
+      <div class="row">
+        <label for="savePath">保存目录（下载目录内相对路径）</label>
+        <input type="text" id="savePath" spellcheck="false" />
+        <p class="hint">如 <code>BiliScreenshots/{date}/</code> → 下载目录下按日期分子文件夹。可用变量：<code>{date}</code>（yyyyMMdd）、<code>{time}</code>（HHmmss）。最终文件会保存到：<code>下载/&lt;此路径&gt;/&lt;文件名&gt;</code></p>
+      </div>
+
+      <div class="row">
+        <span class="label">图片格式</span>
+        <label class="radio"><input type="radio" name="format" value="jpeg" /> JPEG（体积小，质量可调）</label>
+        <label class="radio"><input type="radio" name="format" value="png" /> PNG（无损，体积大）</label>
+      </div>
+
+      <div class="row" id="qualityRow">
+        <label for="jpegQuality">JPEG 质量：<span id="qualityVal">90</span>%</label>
+        <input type="range" id="jpegQuality" min="1" max="100" step="1" />
+        <p class="hint">质量越高文件越大。截图按视频原始分辨率导出，建议 80–95%。</p>
+      </div>
+
+      <div class="row">
+        <label class="checkbox">
+          <input type="checkbox" id="includeDanmaku" /> 截图带上当前弹幕
+        </label>
+        <p class="hint">关闭时截取的画面不含弹幕；此设置不影响你在播放器里看到的弹幕。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>文件名模板</h2>
+      <p class="hint">从下方变量库<b>拖动模块</b>到构建区组合文件名；构建区内模块可拖动排序，点 <b>×</b> 删除：</p>
+      <div class="tpl-library" id="tplLibrary"></div>
+      <div class="tpl-dropzone" id="tplDropzone">
+        <span class="tpl-placeholder" id="tplPlaceholder">将模块拖到这里…</span>
+      </div>
+      <div class="tpl-actions">
+        <button type="button" class="btn mini" id="addTextBtn">＋ 添加自定义文本（分隔符/前缀）</button>
+      </div>
+      <p class="hint">预览：<span id="preview"></span></p>
+      <details class="adv">
+        <summary>高级：直接编辑模板字符串</summary>
+        <textarea id="filenameTemplateRaw" spellcheck="false" rows="2"></textarea>
+        <button type="button" class="btn mini" id="applyRawBtn">应用字符串</button>
+        <p class="hint">格式如 <code>{date}_{time}_{title}</code>，可用变量与拖拽模块一致；修改后点击「应用字符串」同步到上方构建区。</p>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>连拍</h2>
+      <div class="row">
+        <label for="burstPath">连拍保存目录（下载目录内相对路径）</label>
+        <input type="text" id="burstPath" spellcheck="false" />
+        <p class="hint">连拍图片单独保存到此目录（与单张截图分开），如 <code>BiliScreenshots/burst/</code> → 最终路径为 <code>下载/BiliScreenshots/burst/</code>。可用变量：<code>{date}</code>、<code>{time}</code></p>
+      </div>
+      <div class="row">
+        <label for="burstCount">连拍张数</label>
+        <input type="number" id="burstCount" min="1" max="50" />
+      </div>
+      <div class="row">
+        <label for="burstInterval">间隔（毫秒）</label>
+        <input type="number" id="burstInterval" min="100" max="5000" step="100" />
+        <p class="hint">连拍进行中再按一次连拍快捷键可提前停止。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>提示</h2>
+      <div class="row">
+        <label class="checkbox"><input type="checkbox" id="notifyOnSave" /> 保存成功后提示</label>
+      </div>
+      <div class="row">
+        <label class="checkbox"><input type="checkbox" id="useSystemNotification" /> 使用系统通知（否则仅扩展图标角标显示 ✓）</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>快捷键</h2>
+      <div class="row">
+        <label class="checkbox">
+          <input type="checkbox" id="pageShortcutEnabled" /> 启用页面内快捷键（可直接在下方修改）
+        </label>
+        <p class="hint">点击输入框后按下新的组合键即可录制。页面内快捷键在 B 站页面获得焦点时生效。</p>
+      </div>
+      <div class="row">
+        <label for="shortcutCapture">单张截图快捷键</label>
+        <div class="shortcut-row">
+          <input type="text" id="shortcutCapture" class="shortcut" readonly placeholder="点击后按下组合键…" />
+          <button type="button" class="btn mini" data-clear="shortcutCapture">清除</button>
+        </div>
+      </div>
+      <div class="row">
+        <label for="shortcutBurst">连拍快捷键</label>
+        <div class="shortcut-row">
+          <input type="text" id="shortcutBurst" class="shortcut" readonly placeholder="点击后按下组合键…" />
+          <button type="button" class="btn mini" data-clear="shortcutBurst">清除</button>
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn mini" id="resetShortcutsBtn">恢复默认快捷键</button>
+      </div>
+      <p class="hint" id="shortcutConflict"></p>
+      <p class="hint">
+        录制需至少包含一个修饰键（Ctrl/Alt/Shift/⌘），避免普通按键被拦截。若按下组合键无反应，说明该组合已被浏览器或系统占用，请换一组。
+      </p>
+      <p class="hint">
+        系统级快捷键（默认 <kbd>Ctrl+Shift+S</kbd> / <kbd>Ctrl+Shift+X</kbd>）仍然生效，它只能在浏览器自带的
+        <a href="chrome://extensions/shortcuts" target="_blank" rel="noopener">扩展快捷键设置</a> 中修改。
+        若页面内快捷键与系统级设置相同，浏览器会优先响应系统级（行为一致，无需担心）。
+      </p>
+    </section>
+
+    <div class="actions">
+      <button id="testBtn" class="btn secondary">测试保存一张</button>
+      <button id="saveBtn" class="btn primary">保存设置</button>
+      <span id="status"></span>
+    </div>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>

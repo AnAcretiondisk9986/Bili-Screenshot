@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Bili Screenshot — B站视频截图",
+  "version": "1.0.0",
+  "description": "在 B 站视频页按快捷键静默截图播放器画面（支持自定义路径、JPEG 质量压缩、带/不带弹幕、连拍、文件名模板、截图历史）。",
+  "permissions": ["storage", "downloads", "notifications", "tabs", "scripting", "alarms"],
+  "host_permissions": ["https://*.bilibili.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.bilibili.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Bili Screenshot",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options/options.html",
+  "commands": {
+    "bili-screenshot": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "截图当前播放器画面"
+    },
+    "bili-burst": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+X",
+        "mac": "Command+Shift+X"
+      },
+      "description": "连拍（默认 6 张，可再按一次停止）"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bili Screenshot</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="../icons/icon48.png" alt="logo" width="24" height="24" />
+    <span class="title">Bili Screenshot</span>
+    <a id="settingsLink" href="#" title="打开设置">⚙️</a>
+  </header>
+
+  <p id="shortcutHint" class="hint">快捷键：截图 <kbd>Ctrl+Shift+S</kbd> · 连拍 <kbd>Ctrl+Shift+X</kbd>（可在扩展<b>设置页</b>中直接修改）</p>
+
+  <div id="listWrap">
+    <ul id="history"></ul>
+    <p id="empty" class="empty">暂无截图记录<br /><span>在 B 站视频页按快捷键截图后，记录会显示在这里。</span></p>
+  </div>
+
+  <footer>
+    <button id="clearBtn">清空记录</button>
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>
