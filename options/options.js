@@ -22,7 +22,7 @@ const DEFAULTS = {
   notifyOnSave: true,
   useSystemNotification: false,
   pageShortcutEnabled: true,
-  shortcutCapture: { ctrl: true, alt: true, shift: false, meta: false, code: "KeyS" },
+  shortcutCapture: { ctrl: false, alt: true, shift: true, meta: false, code: "KeyS" },
   shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
   shortcutCopy: DEFAULT_COPY_SHORTCUT,
   copyAlsoSave: false,
@@ -87,8 +87,8 @@ function shortcutEqual(a, b) {
 const DEFAULT_MOD = IS_MAC ? { ctrl: false, shift: true, alt: false, meta: true } : { ctrl: true, shift: true, alt: false, meta: false };
 
 const SYSTEM_SHORTCUTS = [
-  // Windows/Linux 用 Ctrl+Alt+S 避开 Edge 内置网页截图（Ctrl+Shift+S）；Mac 保持 ⌘+Shift+S
-  { name: "单张截图", combo: IS_MAC ? { ctrl: false, shift: true, alt: false, meta: true, code: "KeyS" } : { ctrl: true, shift: false, alt: true, meta: false, code: "KeyS" } },
+  // Windows/Linux 用 Alt+Shift+S 避开 Edge 内置网页截图（Ctrl+Shift+S，且 Chrome 命令不支持 Ctrl+Alt）；Mac 保持 ⌘+Shift+S
+  { name: "单张截图", combo: IS_MAC ? { ctrl: false, shift: true, alt: false, meta: true, code: "KeyS" } : { ctrl: false, shift: true, alt: true, meta: false, code: "KeyS" } },
   { name: "连拍", combo: { ...DEFAULT_MOD, code: "KeyX" } },
   // Mac 上 Command+Shift+Z 是浏览器重做快捷键，故复制用 Command+Shift+C
   { name: "复制", combo: { ctrl: !IS_MAC, shift: true, alt: false, meta: IS_MAC, code: IS_MAC ? "KeyC" : "KeyZ" } },
@@ -263,7 +263,7 @@ document.querySelectorAll("[data-clear]").forEach((btn) => {
 
 // 恢复默认页面内快捷键（与 DEFAULTS 一致：Ctrl+Shift，跨平台统一，避免与 Mac 系统级 ⌘ 组合冲突）
 $("resetShortcutsBtn").addEventListener("click", () => {
-  window._scCapture = { ctrl: true, alt: true, shift: false, meta: false, code: "KeyS" };
+  window._scCapture = { ctrl: false, alt: true, shift: true, meta: false, code: "KeyS" };
   window._scBurst = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" };
   window._scCopy = { ctrl: !IS_MAC, shift: true, alt: false, meta: IS_MAC, code: IS_MAC ? "KeyC" : "KeyZ" };
   renderShortcuts();

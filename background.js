@@ -24,7 +24,7 @@ const DEFAULTS = {
   notifyOnSave: true,                  // 保存后轻提示
   useSystemNotification: false,        // 使用系统通知（否则仅角标）
   pageShortcutEnabled: true,           // 页面内快捷键总开关
-  shortcutCapture: { ctrl: true, alt: true, shift: false, meta: false, code: "KeyS" },
+  shortcutCapture: { ctrl: false, alt: true, shift: true, meta: false, code: "KeyS" },
   shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
   shortcutCopy: DEFAULT_COPY_SHORTCUT,
   copyAlsoSave: false,                 // 复制到剪贴板时同时保存文件
