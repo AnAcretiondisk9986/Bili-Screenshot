@@ -20,6 +20,8 @@ const DEFAULTS = {
   pageShortcutEnabled: true,           // 页面内快捷键总开关
   shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
   shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
+  shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
+  copyAlsoSave: false,                 // 复制到剪贴板时同时保存文件
 };
 
 async function getSettings() {
@@ -216,8 +218,59 @@ async function captureViewport(tab, rect) {
   }
 }
 
-// ---------- 核心：单次截图 ----------
+// ---------- 核心：复制到剪贴板 ----------
 
+async function copyOnce() {
+  const settings = await getSettings();
+
+  const tab = await getActiveBiliTab();
+  if (!tab) {
+    await notifyUser("Bili Screenshot", "请先在 B 站视频页打开视频再复制");
+    return false;
+  }
+
+  const ready = await ensureContent(tab.id);
+  if (!ready) {
+    await notifyUser("Bili Screenshot", "无法与页面通信，请刷新 B 站页面后重试");
+    return false;
+  }
+
+  let resp;
+  try {
+    resp = await chrome.tabs.sendMessage(tab.id, {
+      type: "copy",
+      includeDanmaku: settings.includeDanmaku,
+    });
+  } catch (e) {
+    await notifyUser("复制失败", "与页面通信失败");
+    return false;
+  }
+
+  if (!resp || !resp.ok) {
+    const msg =
+      resp && resp.reason === "tainted"
+        ? "视频源跨域，无法复制到剪贴板（可用快捷键直接保存）"
+        : resp && resp.reason === "clipboard-denied"
+        ? "剪贴板写入被浏览器拒绝，请检查权限或重试"
+        : reasonText(resp);
+    await notifyUser("复制失败", msg);
+    return false;
+  }
+
+  if (settings.copyAlsoSave) {
+    const ok = await captureOnce({ silent: true });
+    if (ok) {
+      await notifyUser("已复制并保存", `${resp.width}×${resp.height} 画面已复制到剪贴板并保存文件`);
+    } else {
+      await notifyUser("已复制到剪贴板", `${resp.width}×${resp.height} 画面已复制，但文件保存失败`);
+    }
+  } else {
+    await notifyUser("已复制到剪贴板", `${resp.width}×${resp.height} 画面已复制，可直接粘贴（Ctrl+V）`);
+  }
+  return true;
+}
+
+// ---------- 核心：单次截图 ----------
 async function captureOnce(opts = {}) {
   const settings = await getSettings();
 
@@ -361,6 +414,8 @@ chrome.commands.onCommand.addListener((command) => {
     captureOnce().catch((e) => console.error(e));
   } else if (command === "bili-burst") {
     toggleBurst().catch((e) => console.error(e));
+  } else if (command === "bili-copy") {
+    copyOnce().catch((e) => console.error(e));
   }
 });
 
@@ -382,6 +437,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
   } else if (msg && msg.type === "trigger-burst") {
     toggleBurst().catch((e) => console.error(e));
+    sendResponse({ ok: true });
+  } else if (msg && msg.type === "trigger-copy") {
+    copyOnce().catch((e) => console.error(e));
     sendResponse({ ok: true });
   }
 });

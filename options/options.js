@@ -18,6 +18,8 @@ const DEFAULTS = {
   pageShortcutEnabled: true,
   shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
   shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
+  shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
+  copyAlsoSave: false,
 };
 
 // ---------- 快捷键格式化 ----------
@@ -82,7 +84,16 @@ const DEFAULT_MOD = IS_MAC ? { ctrl: false, shift: true, alt: false, meta: true 
 const SYSTEM_SHORTCUTS = [
   { name: "单张截图", combo: { ...DEFAULT_MOD, code: "KeyS" } },
   { name: "连拍", combo: { ...DEFAULT_MOD, code: "KeyX" } },
+  // Mac 上 Command+Shift+Z 是浏览器重做快捷键，故复制用 Command+Shift+C
+  { name: "复制", combo: { ctrl: !IS_MAC, shift: true, alt: false, meta: IS_MAC, code: IS_MAC ? "KeyC" : "KeyZ" } },
 ];
+
+// 快捷键录入框与内存变量映射
+const SC_MAP = {
+  shortcutCapture: "_scCapture",
+  shortcutBurst: "_scBurst",
+  shortcutCopy: "_scCopy",
+};
 
 function readForm() {
   return {
@@ -99,6 +110,8 @@ function readForm() {
     pageShortcutEnabled: $("pageShortcutEnabled").checked,
     shortcutCapture: window._scCapture || null,
     shortcutBurst: window._scBurst || null,
+    shortcutCopy: window._scCopy || null,
+    copyAlsoSave: $("copyAlsoSave").checked,
   };
 }
 
@@ -116,8 +129,10 @@ function fillForm(s) {
   $("notifyOnSave").checked = s.notifyOnSave;
   $("useSystemNotification").checked = s.useSystemNotification;
   $("pageShortcutEnabled").checked = s.pageShortcutEnabled;
+  $("copyAlsoSave").checked = !!s.copyAlsoSave;
   window._scCapture = s.shortcutCapture || null;
   window._scBurst = s.shortcutBurst || null;
+  window._scCopy = s.shortcutCopy || null;
   renderShortcuts();
   // 空字符串表示用户清空了模板（保存后 background 会回退为 screenshot_时间）
   window._tplModules = s.filenameTemplate ? parseTemplateToModules(s.filenameTemplate) : [];
@@ -149,6 +164,7 @@ function setStatus(msg, isError) {
 function renderShortcuts() {
   $("shortcutCapture").value = formatShortcut(window._scCapture);
   $("shortcutBurst").value = formatShortcut(window._scBurst);
+  $("shortcutCopy").value = formatShortcut(window._scCopy);
   updateConflictHint();
 }
 
@@ -158,9 +174,10 @@ function updateConflictHint() {
   const pairs = [
     ["shortcutCapture", "单张截图"],
     ["shortcutBurst", "连拍"],
+    ["shortcutCopy", "复制"],
   ];
-  for (const [key, label] of pairs) {
-    const combo = window[key === "shortcutCapture" ? "_scCapture" : "_scBurst"];
+  for (const [id, label] of pairs) {
+    const combo = window[SC_MAP[id]];
     if (!combo) continue;
     for (const sys of SYSTEM_SHORTCUTS) {
       if (shortcutEqual(combo, sys.combo)) {
@@ -170,8 +187,17 @@ function updateConflictHint() {
       }
     }
   }
-  if (window._scCapture && window._scBurst && shortcutEqual(window._scCapture, window._scBurst)) {
-    conflicts.push("「单张截图」与「连拍」快捷键相同，建议区分");
+  const seen = {};
+  for (const id of Object.keys(SC_MAP)) {
+    const combo = window[SC_MAP[id]];
+    if (!combo) continue;
+    const sig = `${combo.code}|${combo.ctrl}|${combo.alt}|${combo.shift}|${combo.meta}`;
+    if (seen[sig]) {
+      const label = pairs.find((p) => p[0] === id)[1];
+      const other = pairs.find((p) => p[0] === seen[sig])[1];
+      conflicts.push(`「${label}」与「${other}」快捷键相同，建议区分`);
+    }
+    seen[sig] = id;
   }
   el.textContent = conflicts.join("；");
 }
@@ -217,15 +243,14 @@ document.querySelectorAll("input.shortcut").forEach((el) => {
       el.value = "请至少包含一个修饰键（Ctrl/Alt/Shift/⌘）";
       return;
     }
-    window[recording.key === "shortcutCapture" ? "_scCapture" : "_scBurst"] = combo;
+    window[SC_MAP[recording.key]] = combo;
     stopRecording();
-    renderShortcuts();
-  });
+    renderShortcuts();  });
 });
 
 document.querySelectorAll("[data-clear]").forEach((btn) => {
   btn.addEventListener("click", () => {
-    window[btn.dataset.clear === "shortcutCapture" ? "_scCapture" : "_scBurst"] = null;
+    window[SC_MAP[btn.dataset.clear]] = null;
     renderShortcuts();
   });
 });
@@ -234,6 +259,7 @@ document.querySelectorAll("[data-clear]").forEach((btn) => {
 $("resetShortcutsBtn").addEventListener("click", () => {
   window._scCapture = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" };
   window._scBurst = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" };
+  window._scCopy = { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" };
   renderShortcuts();
   setStatus("已恢复默认快捷键，记得点击「保存设置」");
 });
@@ -442,7 +468,7 @@ async function init() {
     stopRecording();
     try {
       await chrome.storage.sync.set(readForm());
-      setStatus("✅ 设置已保存");
+      setStatus("设置已保存");
     } catch (e) {
       setStatus("保存失败：" + (e && e.message), true);
     }
@@ -459,7 +485,7 @@ async function init() {
     try {
       const resp = await chrome.runtime.sendMessage({ type: "test-save" });
       if (resp && resp.ok) {
-        setStatus(`✅ 测试图片已保存到：下载/${resp.path}`);
+        setStatus(`测试图片已保存到：下载/${resp.path}`);
       } else {
         setStatus("测试失败：" + ((resp && resp.error) || "未知错误"), true);
       }

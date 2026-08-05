@@ -23,6 +23,9 @@ FILES = [
     "popup/popup.html",
     "popup/popup.css",
     "popup/popup.js",
+    "history/history.html",
+    "history/history.css",
+    "history/history.js",
 ]
 
 

@@ -7,7 +7,7 @@
 </head>
 <body>
   <main class="wrap">
-    <h1>⚙️ Bili Screenshot 设置</h1>
+    <h1>Bili Screenshot 设置</h1>
 
     <section class="card">
       <h2>保存</h2>
@@ -34,6 +34,13 @@
           <input type="checkbox" id="includeDanmaku" /> 截图带上当前弹幕
         </label>
         <p class="hint">关闭时截取的画面不含弹幕；此设置不影响你在播放器里看到的弹幕。</p>
+      </div>
+
+      <div class="row">
+        <label class="checkbox">
+          <input type="checkbox" id="copyAlsoSave" /> 复制到剪贴板时同时保存文件
+        </label>
+        <p class="hint">开启后，按复制快捷键会一边复制画面到剪贴板，一边按上述路径/模板保存图片；关闭则只复制不保存。</p>
       </div>
     </section>
 
@@ -80,7 +87,7 @@
         <label class="checkbox"><input type="checkbox" id="notifyOnSave" /> 保存成功后提示</label>
       </div>
       <div class="row">
-        <label class="checkbox"><input type="checkbox" id="useSystemNotification" /> 使用系统通知（否则仅扩展图标角标显示 ✓）</label>
+        <label class="checkbox"><input type="checkbox" id="useSystemNotification" /> 使用系统通知（否则仅扩展图标角标显示勾）</label>
       </div>
     </section>
 
@@ -104,6 +111,13 @@
         <div class="shortcut-row">
           <input type="text" id="shortcutBurst" class="shortcut" readonly placeholder="点击后按下组合键…" />
           <button type="button" class="btn mini" data-clear="shortcutBurst">清除</button>
+        </div>
+      </div>
+      <div class="row">
+        <label for="shortcutCopy">复制到剪贴板快捷键</label>
+        <div class="shortcut-row">
+          <input type="text" id="shortcutCopy" class="shortcut" readonly placeholder="点击后按下组合键…" />
+          <button type="button" class="btn mini" data-clear="shortcutCopy">清除</button>
         </div>
       </div>
       <div class="row">

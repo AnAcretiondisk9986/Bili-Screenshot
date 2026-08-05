@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
 
 body {
-  width: 340px;
+  width: 300px;
   margin: 0;
   font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   font-size: 13px;
@@ -19,14 +19,6 @@ header {
 
 .title { font-weight: 700; flex: 1; color: #00a1d6; }
 
-#settingsLink {
-  text-decoration: none;
-  font-size: 16px;
-  color: #888;
-}
-
-#settingsLink:hover { color: #00a1d6; }
-
 .hint {
   margin: 0;
   padding: 8px 12px;
@@ -34,6 +26,7 @@ header {
   color: #888;
   background: #fafbfc;
   border-bottom: 1px solid #eee;
+  line-height: 1.7;
 }
 
 kbd {
@@ -45,72 +38,23 @@ kbd {
   font-size: 11px;
 }
 
-#listWrap { min-height: 180px; max-height: 420px; overflow-y: auto; }
-
-ul#history {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-#history li {
+.menu {
+  padding: 12px;
   display: flex;
-  gap: 10px;
-  padding: 10px 12px;
-  border-bottom: 1px solid #f0f1f2;
+  flex-direction: column;
+  gap: 8px;
 }
 
-#history li:hover { background: #f7fafc; }
-
-.thumb {
-  width: 88px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 4px;
-  background: #eef0f1;
-  flex-shrink: 0;
-}
-
-.meta { min-width: 0; }
-
-.meta .name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-
-.meta .sub {
-  font-size: 11px;
-  color: #999;
-  line-height: 1.5;
-  word-break: break-all;
-}
-
-.empty {
-  text-align: center;
-  color: #aaa;
-  padding: 40px 16px;
-  line-height: 1.8;
-}
-
-.empty span { font-size: 11px; }
-
-footer {
-  padding: 8px 12px;
-  border-top: 1px solid #e3e5e7;
-  text-align: right;
-}
-
-#clearBtn {
-  border: 1px solid #d0d3d6;
+.menu-btn {
+  border: 1px solid #00a1d6;
   background: #fff;
-  border-radius: 6px;
-  padding: 5px 12px;
-  font-size: 12px;
+  color: #00a1d6;
+  border-radius: 8px;
+  padding: 9px 0;
+  font-size: 13px;
   cursor: pointer;
-  color: #666;
 }
 
-#clearBtn:hover { color: #d33; border-color: #d33; }
+.menu-btn:hover { background: #eaf6fb; }
+.menu-btn.primary { background: #00a1d6; color: #fff; }
+.menu-btn.primary:hover { background: #0088b8; }

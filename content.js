@@ -200,8 +200,7 @@
       duration: formatTime(video.duration),
     };
 
-    const composed = composeFrame(video, includeDanmaku);
-    if (composed.ok) {
+    const composed = composeFrame(video, includeDanmaku);    if (composed.ok) {
       try {
         const dataUrl = canvasToDataUrl(composed.canvas, format, quality);
         const thumb = makeThumb(composed.canvas);
@@ -242,6 +241,39 @@
     sendResponse({ ok: false, reason: composed.reason || "no-video-data" });
   });
 
+  // 复制当前画面到剪贴板（PNG 无损，含/不含弹幕按设置）
+  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (!msg || msg.type !== "copy") return;
+
+    const video = findVideo();
+    if (!video) {
+      sendResponse({ ok: false, reason: "no-video" });
+      return;
+    }
+
+    const composed = composeFrame(video, !!msg.includeDanmaku);
+    if (!composed.ok) {
+      sendResponse({ ok: false, reason: composed.tainted ? "tainted" : composed.reason });
+      return;
+    }
+
+    composed.canvas.toBlob(async (blob) => {
+      if (!blob) {
+        sendResponse({ ok: false, reason: "export-failed" });
+        return;
+      }
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        sendResponse({ ok: true, width: composed.canvas.width, height: composed.canvas.height });
+      } catch (e) {
+        sendResponse({ ok: false, reason: "clipboard-denied" });
+      }
+    }, "image/png");
+    return true; // 异步 sendResponse
+  });
+
   // background 捕获完成后通知恢复弹幕
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg && msg.type === "restore-danmaku") {
@@ -259,6 +291,7 @@
     pageShortcutEnabled: true,
     shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
     shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
+    shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
   };
 
   function matchesShortcut(e, s) {
@@ -278,6 +311,7 @@
         pageShortcutEnabled: true,
         shortcutCapture: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyS" },
         shortcutBurst: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyX" },
+        shortcutCopy: { ctrl: true, shift: true, alt: false, meta: false, code: "KeyZ" },
       });
       shortcutSettings = data;
     } catch (e) {
@@ -287,7 +321,7 @@
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "sync") return;
-    for (const key of ["pageShortcutEnabled", "shortcutCapture", "shortcutBurst"]) {
+    for (const key of ["pageShortcutEnabled", "shortcutCapture", "shortcutBurst", "shortcutCopy"]) {
       if (changes[key]) shortcutSettings[key] = changes[key].newValue;
     }
   });
@@ -306,6 +340,10 @@
         e.preventDefault();
         e.stopPropagation();
         chrome.runtime.sendMessage({ type: "trigger-burst" }).catch(() => {});
+      } else if (matchesShortcut(e, shortcutSettings.shortcutCopy)) {
+        e.preventDefault();
+        e.stopPropagation();
+        chrome.runtime.sendMessage({ type: "trigger-copy" }).catch(() => {});
       }
     },
     true // capture 阶段，尽早拦截
