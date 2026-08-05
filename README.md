@@ -2,6 +2,26 @@
 
 在 B 站视频页按快捷键**静默保存**播放器画面到本地，无需弹窗确认。
 
+## 通用安装步骤（开发者模式）
+
+本扩展兼容所有 Chromium 内核浏览器（Chrome、Edge、360 等），以下方法通用，无需商店上架：
+
+1. **获取源码**：
+   - 在 [GitHub 仓库](https://github.com/AnAcretiondisk9986/Bili-Screenshot) 页面点击绿色 **Code** 按钮 → **Download ZIP**（或直接到 [Releases](https://github.com/AnAcretiondisk9986/Bili-Screenshot/releases) 下载 `bili-screenshot-1.0.0.zip`）
+   - 解压到任意位置，确认 `manifest.json` 在解压目录的**根目录**（不要在压缩包内再嵌套一层文件夹）
+2. **打开扩展管理页**：
+   - Chrome：地址栏输入 `chrome://extensions/` 回车
+   - Edge：地址栏输入 `edge://extensions/` 回车
+   - 其他浏览器：设置 → 扩展/扩展程序
+3. **开启「开发者模式」**：页面右上角（Edge 在左侧）打开开关
+4. 点击 **「加载已解压的扩展程序」**，选择解压后的目录
+5. 完成！打开任意 B 站视频页，按 `Ctrl+Shift+S` 即可截图
+
+> 💡 **三种安装方式怎么选**：
+> - 本方法（开发者模式）— 通用、永久生效、跟随代码更新，适合自己用或任何浏览器
+> - [一键安装器](#一键安装器无需开发者模式) — 双击 exe 自动装好，适合不想动手的非技术用户
+> - 商店版 — 发布后可在 Chrome Web Store / Edge Add-ons 搜索安装
+
 ## 功能
 
 - 🎯 **一键静默截图**：快捷键直接保存，默认 `Ctrl+Shift+S`（Mac：`⌘+Shift+S`）
@@ -15,15 +35,6 @@
 - 📝 **文件名模板**：`{date} {time} {bvid} {title} {progress} {duration} {width} {height}` 自由组合
 - 🕘 **截图历史**：popup 中查看最近 100 条记录（缩略图 + 文件名 + 尺寸）
 - 🔔 **轻提示**：保存成功显示扩展角标 ✓，可选系统通知
-
-## 安装（开发者模式）
-
-1. 打开 Chrome，进入 `chrome://extensions/`
-2. 右上角开启 **开发者模式**
-3. 点击 **加载已解压的扩展程序**，选择本目录（`...\Bili-Screenshot`）
-4. 打开任意 B 站视频页，按 `Ctrl+Shift+S` 即可截图
-
-> 快捷键可在 `chrome://extensions/shortcuts` 中修改。
 
 ## 使用说明
 
