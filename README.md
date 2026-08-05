@@ -7,7 +7,7 @@
 本扩展兼容所有 Chromium 内核浏览器（Chrome、Edge、360 等），以下方法通用，无需商店上架：
 
 1. **获取源码**：
-   - 在 [GitHub 仓库](https://github.com/AnAcretiondisk9986/Bili-Screenshot) 页面点击绿色 **Code** 按钮 → **Download ZIP**（或直接到 [Releases](https://github.com/AnAcretiondisk9986/Bili-Screenshot/releases) 下载 `bili-screenshot-1.0.0.zip`）
+   - 在 [GitHub 仓库](https://github.com/AnAcretiondisk9986/Bili-Screenshot) 页面点击绿色 **Code** 按钮 → **Download ZIP**（或直接到 [Releases](https://github.com/AnAcretiondisk9986/Bili-Screenshot/releases) 下载 `bili-screenshot-1.1.0.zip`）
    - 解压到任意位置，确认 `manifest.json` 在解压目录的**根目录**（不要在压缩包内再嵌套一层文件夹）
 2. **打开扩展管理页**：
    - Chrome：地址栏输入 `chrome://extensions/` 回车
@@ -17,9 +17,8 @@
 4. 点击 **「加载已解压的扩展程序」**，选择解压后的目录
 5. 完成！打开任意 B 站视频页，按 `Ctrl+Shift+S` 即可截图
 
-> **三种安装方式怎么选**：
+> **两种安装方式怎么选**：
 > - 本方法（开发者模式）— 通用、永久生效、跟随代码更新，适合自己用或任何浏览器
-> - [一键安装器](#一键安装器无需开发者模式) — 双击 exe 自动装好，适合不想动手的非技术用户
 > - 商店版 — 发布后可在 Chrome Web Store / Edge Add-ons 搜索安装
 
 ## 功能
@@ -55,19 +54,6 @@
 - **系统级快捷键**：由浏览器拦截，任何状态下都可靠，但只能在 `chrome://extensions/shortcuts` 修改（Chrome API 限制）
 - 两者可并存：若配置相同组合，浏览器优先响应系统级，行为一致无冲突
 
-## 一键安装器（无需开发者模式）
-
-如果目标用户不想手动开启开发者模式，可直接下载 **`BiliScreenshotInstaller.exe`**（单文件，扩展已内嵌其中）：
-
-1. 下载 `BiliScreenshotInstaller.exe`（GitHub Releases 页面）
-2. 双击运行 → 自动完成：释放扩展到 `%LOCALAPPDATA%\BiliScreenshot\extension\`，并在桌面和开始菜单创建「B站截图浏览器」快捷方式
-3. 完全退出 Chrome 后，双击该快捷方式启动浏览器，扩展即生效
-
-- 卸载：再次运行安装器（或在命令行执行 `BiliScreenshotInstaller.exe uninstall`）
-- 重新构建：运行 `tools/build_installer.cmd`（自动内嵌扩展文件，使用系统自带 .NET Framework 编译器，无第三方依赖）
-- 工作原理：Chrome 官方支持的 `--load-extension` 启动参数，不修改 Chrome 任何配置
-
-> 注意：扩展仅在该快捷方式启动的 Chrome 中生效；更新扩展版本时重新运行安装器覆盖即可。
 
 ## 项目结构
 
@@ -78,8 +64,8 @@ content.js           # 页面内采集：canvas 合成（视频帧+弹幕层）�
 options/             # 设置页
 popup/               # 截图历史弹窗
 icons/               # 扩展图标
-tools/               # 构建脚本（图标生成、商店打包、安装器编译）
-release/             # 发布产物（商店 zip / 安装器）
+tools/               # 构建脚本（图标生成、商店打包）
+release/             # 发布产物（商店 zip）
 ```
 
 ## 技术说明
